@@ -1,6 +1,6 @@
 <template>
     <div>
-        <strong>Default Size:</strong>
+        <strong>Default Size: 404?</strong>
         <br><br>
         <List header="Header" footer="Footer" border>
             <ListItem>This is a piece of text.</ListItem>

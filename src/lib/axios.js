@@ -38,7 +38,7 @@ class HttpRequest {
       config.headers.Authorization = getToken()
 
       // console.log('config--')
-      console.log(config)
+      // console.log(config)
       // 将传入的参数序列化
       // {"page":1,"limit":10,"key":""}   => "page=2&limit=10&key="
       if (config.method === 'post') {

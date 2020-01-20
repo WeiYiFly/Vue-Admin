@@ -4,22 +4,22 @@
   <Menu ref="menu" :active-name="$route.name" :open-names="openNames" width="auto" theme="dark" v-show="!collapsed" @on-select="handleSelect" >
     <template v-for="item in list">
      <re-submenu v-if="item.children"
-     :name="item.name"
-     :key="`ment_${item.name}`"
+     :name="item.RouterName"
+     :key="`ment_${item.Id}`"
      :parent="item" >
      </re-submenu>
-      <menu-item v-else :key="`menu_${item.name}`" :name="item.name">
-        <Icon :type="item.icon" />
-        {{ item.title }}
+      <menu-item v-else :key="`menu_${item.Id}`" :name="item.RouterName">
+        <Icon :type="item.IconName" />
+        {{ item.Name }}
       </menu-item>
     </template>
   </Menu>
   <div v-show="collapsed" class="drop-wrapper">
     <template v-for="item in list">
-      <re-dropdown @on-select="handleSelect" v-if="item.children" :show-title="false" icon-color="#fff" :key="`drop_${item.name}`" :parent="item"></re-dropdown>
-      <Tooltip v-else transfer :content="item.title" :key="`drop_${item.name}`" placement="right">
-        <span @click="handleClick(item.name)" class="drop-menu-span">
-            <Icon :type="item.icon" color="#fff" :size="IconSite"></Icon>
+      <re-dropdown @on-select="handleSelect" v-if="item.children" :show-title="false" icon-color="#fff" :key="`drop_${item.Id}`" :parent="item"></re-dropdown>
+      <Tooltip v-else transfer :content="item.Name" :key="`drop_${item.Id}`" placement="right">
+        <span @click="handleClick(item.RouterName)" class="drop-menu-span">
+            <Icon :type="item.IconName" color="#fff" :size="IconSite"></Icon>
           </span>
       </Tooltip>
     </template>
@@ -57,7 +57,8 @@ export default {
   },
   methods: {
     handleSelect (name) {
-      // console.log('menu 点击事件')
+      console.log('menu 点击事件')
+      console.log(name)
       this.$router.push({
         name
       })

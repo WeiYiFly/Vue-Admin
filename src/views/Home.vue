@@ -1,7 +1,8 @@
 <template>
 
 <div>
- <button @click="getInfo" :style="{ background: bgColor }">请求数据</button>
+  <strong>首页 --------------啊啊</strong>
+
 </div>
 
 </template>

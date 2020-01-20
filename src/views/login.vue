@@ -96,6 +96,7 @@ export default {
             })
           }).catch(error => {
             console.log(error)
+            this.$Message.error(error.Message)
           })
         } else {
           this.$Message.error('登录失败!')

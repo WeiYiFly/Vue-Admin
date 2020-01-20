@@ -2,7 +2,7 @@
     <div class="layout-wrapper">
       <Layout class="layout-outer">
         <Sider collapsible hide-trigger breakpoint="sm"  v-model="collapsed" class="sider-outer">
-          <side-menu :collapsed="collapsed" :list="menuList" >
+          <side-menu :collapsed="collapsed" :list="userinfoModelList" >
             <img v-show="!collapsed" transfer src='@/assets/img/logo-dark.png' width="200px" height="64px"  />
             <img v-show="collapsed" src='@/assets/img/logo-small.png' width="64px" height="64px" />
           </side-menu>
@@ -10,8 +10,8 @@
         <Layout>
           <Header class="header-wrapper">
             <Icon :class="triggerClasses" @click.native="handleCollapsed"  type="md-menu" :size="32" />
-     <div class="Header-right">
-
+             <div class="Header-right">
+               <Button @click="handleLogout" type="info" size='small'>退出登录</Button>
               <Dropdown style="margin-left: 20px"
               :transfer=true
               @on-click="changingLanguage" >
@@ -141,7 +141,8 @@ export default {
       'UPDATE_ROUTER'
     ]),
     ...mapActions([
-      'handleRemove'
+      'handleRemove',
+      'logout'
     ]),
     handleCollapsed () {
       this.collapsed = !this.collapsed
@@ -161,10 +162,11 @@ export default {
       })
     },
     labelRender (item) {
+      var title = this.userinfo.ModuleList.find(u => u.RouterName === item.name).Name
       return h => {
         return (
           <div>
-            <span>{item.name}</span>
+            <span>{title}</span>
             <icon nativeOn-click={this.handleTabRemove.bind(this, getTabNameByRoute(item))} type="md-close-circle" style="line-height:12px;margin-right: -5px" size="20" ></icon>
           </div>
         )
@@ -175,6 +177,13 @@ export default {
       localSave(localLanguage, name)
       this.$i18n.locale = name
       location.reload()
+    },
+    handleLogout () { // 退出登录
+      this.logout()
+      location.reload() // 清除store
+      this.$router.push({
+        name: 'home'
+      })
     }
 
   },
@@ -186,7 +195,9 @@ export default {
       ]
     },
     ...mapState({
-      tabList: state => state.tabNav.tabList
+      tabList: state => state.tabNav.tabList,
+      userinfoModelList: state => state.user.userinfoModuleList,
+      userinfo: state => state.user.userinfo
     })
   }
 
@@ -236,7 +247,7 @@ export default {
 }
  .header-wrapper .Header-right
  {
-    background: salmon;
+   // background: salmon;
     height: 64px;
     position: relative;
     float :right;
