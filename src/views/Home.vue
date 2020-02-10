@@ -1,18 +1,30 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
-</template>
 
+<div>
+ <button @click="getInfo" :style="{ background: bgColor }">请求数据</button>
+</div>
+
+</template>
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import { getUserInfo } from '@/api/user'
 export default {
-  name: 'Home',
+  name: 'home',
   components: {
-    HelloWorld
+  },
+  data () {
+    return {
+      url: '',
+      bgColor: ''
+    }
+  },
+  methods: {
+    getInfo () {
+      getUserInfo().then(res => {
+        console.log(res)
+      })
+    }
+
   }
 }
 </script>
