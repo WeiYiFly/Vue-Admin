@@ -1,7 +1,7 @@
 <template>
 <div class="side-menu-wrapper">
   <slot></slot>
-  <Menu width="auto" theme="dark" v-show="!collapsed" @on-select="handleSelect" >
+  <Menu ref="menu" :active-name="$route.name" :open-names="openNames" width="auto" theme="dark" v-show="!collapsed" @on-select="handleSelect" >
     <template v-for="item in list">
      <re-submenu v-if="item.children"
      :name="item.name"
@@ -29,6 +29,7 @@
 <script>
 import ReSubmenu from './re-submenu.vue'
 import ReDropdown from './re-dropdown.vue'
+import { getOpenArrByName } from '@/lib/util'
 export default {
   name: 'SideMenu',
   components: {
@@ -49,20 +50,35 @@ export default {
       default: 25
     }
   },
+  computed: {
+    openNames () {
+      return getOpenArrByName(this.$route.name, this.list)
+    }
+  },
   methods: {
     handleSelect (name) {
-      console.log(name)
-      // this.$router.push({
-      //   name
-      // })
+      // console.log('menu 点击事件')
+      this.$router.push({
+        name
+      })
     },
     handleClick (name) {
-      console.log(name)
+      this.$router.push({
+        name
+      })
+      // console.log(name)
+    }
+  },
+  watch: {
+    openNames () {
+      this.$nextTick(() => {
+        this.$refs.menu.updateOpened()
+      })
     }
   }
 }
 </script>
-<style scoped lang="scss">
+<style  lang="scss">
 .side-menu-wrapper{
   width:100%;
 }

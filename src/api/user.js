@@ -4,6 +4,5 @@ export const getUserInfo = () => {
   return axios.request({
     url: '/FingerPrint/getFingerPrint',
     method: 'get'
-
   })
 }

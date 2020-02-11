@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import iview from 'iview'
 import 'iview/dist/styles/iview.css'
+if (process.env.NODE_ENV !== 'production') require('./mock')
+
 Vue.config.productionTip = false
 // 安装Vue插件
 Vue.use(iview)
