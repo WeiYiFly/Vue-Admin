@@ -6,14 +6,14 @@
               <i-col :xs="24" :sm="24" :md="8" :lg="8">
                  <FormItem style="width: 90%">
                    <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                      <label slot="prepend">模块名称</label>
+                      <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
                    </i-input>
                 </FormItem>
               </i-col>
               <i-col :xs="24" :sm="24" :md="8" :lg="8">
                 <FormItem style="width: 90%">
                    <i-input v-model="Queryform.RouterName" placeholder="Enter something...">
-                      <label slot="prepend">路由名称</label>
+                      <label slot="prepend">{{$t('tablecolumns.RouterName')}}</label>
                    </i-input>
                 </FormItem>
               </i-col>
@@ -21,32 +21,32 @@
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
                   <FormItem style="width: 90%">
                     <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">模块名称</label>
+                        <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
                     </i-input>
                   </FormItem>
                 </i-col>
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
                   <FormItem style="width: 90%">
                     <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">模块名称</label>
+                        <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
                     </i-input>
                   </FormItem>
                 </i-col>
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                  <FormItem style="width: 90%" label="是否启用">
+                  <FormItem style="width: 90%" :label='this.$t("tablecolumns.Status")'>
                      <i-switch v-model="Queryform.Status"  />
                   </FormItem>
                 </i-col>
               </template>
               <i-col :xs="24" :sm="24" :md="8" :lg="8">
                 <FormItem style="width: 90%">
-                 <Button type="primary" @click="handleSubmit('QueryformInline')">查询</Button>
-                 <Button style="margin-left: 8px" @click="handleReSet">重置</Button>
+                 <Button type="primary" @click="handleSubmit('QueryformInline')">{{$t('action.Query')}}</Button>
+                 <Button style="margin-left: 8px" @click="handleReSet">{{$t('action.Reset')}}</Button>
                   <a v-if="!QueryformIsOpen"  style="font-size: 14px;" @click="OpenQueryform">
-                      展开<Icon type="ios-arrow-down" />
+                      {{$t('action.Open')}}<Icon type="ios-arrow-down" />
                   </a>
                   <a v-else style="font-size: 14px;" @click="OpenQueryform">
-                      收起<Icon type="ios-arrow-up" />
+                      {{$t('action.Retract')}}<Icon type="ios-arrow-up" />
                   </a>
                 </FormItem>
               </i-col>
@@ -59,7 +59,7 @@
         <Row >
           <Card>
             <button v-if="Rules.Add" type="button" @click="Add" class="ivu-btn ivu-btn-primary" >
-              <icon type="ivu-icon ivu-icon-md-add"></icon> <span>新增</span>
+              <icon type="ivu-icon ivu-icon-md-add"></icon> <span>{{$t('action.NewAdd')}}</span>
             </button>
          </Card>
         </Row>
@@ -81,29 +81,29 @@
         >
           <template>
               <Form :model="formItem" :label-width="80">
-                  <FormItem label="Name">
+                  <FormItem :label='this.$t("tablecolumns.Name")' >
                       <i-input v-model="formItem.Name" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem label="RouterName">
+                  <FormItem :label='this.$t("tablecolumns.RouterName")' >
                       <i-input v-model="formItem.RouterName" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem label="IconName">
+                  <FormItem :label='this.$t("tablecolumns.IconName")'>
                       <i-input v-model="formItem.IconName" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem label="ParentId">
+                  <FormItem :label='this.$t("tablecolumns.ParentId")'>
                       <i-input v-model="formItem.ParentId" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem  label="是否启用">
+                  <FormItem  :label='this.$t("tablecolumns.Status")'>
                      <i-switch v-model="formItem.Status">  </i-switch>
                   </FormItem>
 
-                  <FormItem label="Type">
+                  <FormItem :label='this.$t("tablecolumns.Type")'>
                       <RadioGroup v-model="formItem.Type">
                           <Radio :label=1>Model</Radio>
                           <Radio :label=2>Page</Radio>
                       </RadioGroup>
                   </FormItem>
-                  <FormItem label="Remarks">
+                  <FormItem :label='this.$t("tablecolumns.Remarks")'>
                       <i-input v-model="formItem.Remarks" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></i-input>
                   </FormItem>
               </Form>
@@ -127,14 +127,14 @@ export default {
       tableTotal: 0,
       tablePage: 1,
       tablelimit: 10,
-      BeingAddorEdit: '正在添加数据',
+      BeingAddorEdit: this.$t('message.BeingAddDate'),
       Rules: {
         Add: true,
         Edit: true,
         Delete: true
       },
       formItem: {
-        id: '',
+        Id: '',
         Name: '',
         RouterName: '',
         Status: true,
@@ -151,7 +151,7 @@ export default {
       },
       datacolumns: [
         {
-          title: 'Name',
+          title: this.$t('tablecolumns.Name'),
           key: 'Name',
           render: (h, params) => {
             return h('div', [
@@ -165,11 +165,11 @@ export default {
           }
         },
         {
-          title: '路由name',
+          title: this.$t('tablecolumns.RouterName'),
           key: 'RouterName'
         },
         {
-          title: 'Icon',
+          title: this.$t('tablecolumns.IconName'),
           key: 'IconName',
           render: (h, params) => {
             return h('div', [
@@ -182,7 +182,7 @@ export default {
           }
         },
         {
-          title: 'Type',
+          title: this.$t('tablecolumns.Type'),
           key: 'Type',
           render: (h, params) => {
             let temp = ''
@@ -196,7 +196,7 @@ export default {
           }
         },
         {
-          title: '是否启用',
+          title: this.$t('tablecolumns.Status'),
           key: 'Status',
           render: (h, params) => {
             // const temp = '<Switch v-model=' + params.row.Status + '  />'
@@ -212,11 +212,11 @@ export default {
           }
         },
         {
-          title: '功能描述',
+          title: this.$t('tablecolumns.Remarks'),
           key: 'Remarks'
         },
         {
-          title: 'Action',
+          title: this.$t('tablecolumns.Action'),
           key: 'action',
           width: 150,
           align: 'center',
@@ -235,7 +235,7 @@ export default {
                   this.Eidt(params.index)
                 }
               }
-            }, 'Eidt')
+            }, this.$t('action.Edit'))
             // 删除按钮
             // var DeleteButton = h('Button', {
             //   props: {
@@ -252,7 +252,7 @@ export default {
               props: {
                 confirm: true,
                 transfer: true,
-                title: '您确认删除这条内容吗？'
+                title: this.$t('message.confirmDel')
               },
               on: {
                 'on-ok': () => {
@@ -271,7 +271,7 @@ export default {
                   //   this.Delete(params.index)
                   // }
                 }
-              }, 'Delete')
+              }, this.$t('action.Delete'))
             ])
             var rulesButton = []
             if (this.Rules.Edit) rulesButton = [...rulesButton, EditButton]
@@ -299,12 +299,12 @@ export default {
   methods: {
     Add () {
       // console.log('打开--添加数据 模态框')
-      this.BeingAddorEdit = '正在添加数据'
+      this.BeingAddorEdit = this.$t('message.BeingAddDate')
       this.formItem = { Status: true, Type: 1 }
       this.AddmodalIsOpen = true
     },
     Eidt (index) {
-      this.BeingAddorEdit = '正在编辑数据'
+      this.BeingAddorEdit = this.$t('message.BeingEditDate')
       this.formItem = this.datalist[index]
       this.AddmodalIsOpen = true
     },
@@ -340,7 +340,7 @@ export default {
       this.getShowData()
     },
     handleReSet () {
-      console.log('重置 查询')
+      // console.log('重置 查询')
       this.Queryform = { Status: true }
     },
     messageWarningFn (text) {
@@ -356,11 +356,11 @@ export default {
       console.log(this.formItem.name)
       // 验证
       if (this.formItem.Name === '' || this.formItem.Name === undefined) {
-        this.messageWarningFn('请输入名称')
+        this.messageWarningFn(this.$t('message.InputName'))
         return
       }
-      if (this.BeingAddorEdit === '正在添加数据') {
-        console.log('添加数据 --提交')
+      if (this.BeingAddorEdit === this.$t('message.BeingAddDate')) {
+        // console.log('添加数据 --提交')
         console.log(this.formItem)
         // this.formItem.id = this.datalist.length + 1
         this.datalist.push(this.formItem)
@@ -371,10 +371,10 @@ export default {
           })
         })
       } else {
-        console.log('编辑数据 --提交')
-        console.log(this.datalist)
-        console.log(this.formItem)
-        var tt = this.datalist.findIndex(item => item.id === this.formItem.id)
+        // console.log('编辑数据 --提交')
+        // console.log(this.datalist)
+        // console.log(this.formItem)
+        var tt = this.datalist.findIndex(item => item.Id === this.formItem.Id)
         EditModule(this.formItem).then(res => {
           this.$Message.success({
             background: true,
@@ -383,11 +383,11 @@ export default {
         })
         this.datalist[tt] = this.formItem
       }
+      // this.formItem.id
       this.AddmodalIsOpen = false
     },
     getShowData () {
       this.tableLoading = true
-
       const Querydata = { ...this.Queryform, page: this.tablePage, limit: this.tablelimit }
       GetModuleList(Querydata).then(res => {
         // console.log(res)

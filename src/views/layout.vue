@@ -10,6 +10,20 @@
         <Layout>
           <Header class="header-wrapper">
             <Icon :class="triggerClasses" @click.native="handleCollapsed"  type="md-menu" :size="32" />
+     <div class="Header-right">
+              <Dropdown style="margin-left: 20px"
+              :transfer=true
+              @on-click="changingLanguage" >
+                <a href="javascript:void(0)">
+                    {{$t("language.name")}}
+                    <Icon type="ios-arrow-down"></Icon>
+                </a>
+                <DropdownMenu slot="list">
+                    <DropdownItem name='zh-CN'>{{$t("language.zhCN")}}</DropdownItem>
+                    <DropdownItem name='en-US'>{{$t("language.enUS")}}</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </Header>
           <Content class="content-con">
             <div>
@@ -34,7 +48,9 @@
 <script>
 import SideMenu from '../components/side-menu'
 import { mapState, mapMutations, mapActions } from 'vuex'
-import { getTabNameByRoute, getRouteById } from '@/lib/util'
+import { getTabNameByRoute, getRouteById, localSave } from '@/lib/util'
+import { localLanguage } from '@/config/localStorageName'
+
 export default {
   components: {
     SideMenu
@@ -142,7 +158,14 @@ export default {
           </div>
         )
       }
+    },
+    changingLanguage (name) {
+      console.log(name)
+      localSave(localLanguage, name)
+      this.$i18n.locale = name
+      location.reload()
     }
+
   },
   computed: {
     triggerClasses () {
@@ -200,5 +223,11 @@ export default {
   min-height: "calc(100vh - 84px)";
   // height: 100%;
 }
-
+ .header-wrapper .Header-right
+ {
+    background: salmon;
+    height: 64px;
+    position: relative;
+    float :right;
+ }
 </style>
