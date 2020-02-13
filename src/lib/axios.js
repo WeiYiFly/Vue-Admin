@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 import { baseURL } from '@/config'
 // import { getToken } from '@/lib/util'
 class HttpRequest {
@@ -12,8 +13,9 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        //
-      }
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      timeout: 3000 // 请求超时时长
     }
     return config
   }
@@ -33,11 +35,20 @@ class HttpRequest {
       }
       this.queue[url] = true
       // config.headers['Authorization'] = getToken()
+      // console.log('config--')
+      // console.log(config)
+      // 将传入的参数序列化
+      // {"page":1,"limit":10,"key":""}   => "page=2&limit=10&key="
+      if (config.method === 'post') {
+        config.data = qs.stringify(config.data)
+      }
+      // console.log(config)
       return config
     }, error => {
       return Promise.reject(error)
     })
     instance.interceptors.response.use(res => {
+      // console.log('请求--success')
       // console.log(res)
       this.distroy(url)
       const { data } = res

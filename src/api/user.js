@@ -2,7 +2,7 @@ import axios from './index'
 
 export const getUserInfo = () => {
   return axios.request({
-    url: '/FingerPrint/getFingerPrint',
+    url: '/Account/Tset',
     method: 'get'
   })
 }

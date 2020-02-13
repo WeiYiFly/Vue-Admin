@@ -21,8 +21,10 @@ const getTabListToLocal = tabList => {
 const mutations = {
   UPDATE_ROUTER (state, route) {
     // if (!state.tabList.find(item => item.name === route.name)) { state.tabList.push(route) }
+    console.log('更新tabList')
     if (!routeHasExist(state.tabList, route)) { state.tabList.push(route) }
     localSave(localTabList, JSON.stringify(getTabListToLocal(state.tabList)))
+    console.log('更新tabList---')
   },
   REMOVE_TAB (state, index) {
     state.tabList.splice(index, 1)

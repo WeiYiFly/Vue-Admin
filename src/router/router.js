@@ -5,6 +5,8 @@ import name1 from '@/views/name1.vue'
 import name2 from '@/views/name2.vue'
 import table1 from '@/views/table1.vue'
 import table2 from '@/views/table2.vue'
+import Modoule from '@/views/system/Modoule.vue'
+
 export default [
   {
     path: '/layout',
@@ -46,6 +48,18 @@ export default [
         },
         component: () => import('@/views/params.vue'),
         props: true
+      }
+    ]
+  },
+  {
+    path: '/System',
+    name: 'system',
+    component: Layout,
+    children: [
+      {
+        path: 'modoule',
+        name: 'system-modoule',
+        component: Modoule
       }
     ]
   },

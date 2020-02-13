@@ -88,13 +88,13 @@ export default {
           ]
         },
         {
-          title: 'title4',
-          name: 'name4',
+          title: '系统管理',
+          name: 'Layout',
           icon: 'ios-alarm',
           children: [
             {
-              title: 'title4-1',
-              name: 'name41',
+              title: '模块管理',
+              name: 'system-modoule',
               icon: 'ios-alarm'
             }
           ]
@@ -120,6 +120,7 @@ export default {
       this.collapsed = !this.collapsed
     },
     handleClickTab (name) {
+      // console.log('点击tag')
       const route = getRouteById(name)
       this.$router.push(route)
     },
@@ -192,10 +193,12 @@ export default {
   margin-bottom: 0;
 }
 .layout-wrapper, .layout-outer .content-con .view-box{
+  // height: 100%;
   margin-bottom: 0;
 }
 .layout-wrapper, .layout-outer .page-card{
-    min-height: "calc(100vh - 84px)";
+  min-height: "calc(100vh - 84px)";
+  // height: 100%;
 }
 
 </style>
