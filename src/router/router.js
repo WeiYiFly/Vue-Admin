@@ -6,7 +6,9 @@ import name2 from '@/views/name2.vue'
 import table1 from '@/views/table1.vue'
 import table2 from '@/views/table2.vue'
 import Modoule from '@/views/system/Modoule.vue'
-
+import User from '@/views/system/User.vue'
+import Role from '@/views/system/Role.vue'
+import FormGroup from '@/views/Form-group.vue'
 export default [
   {
     path: '/layout',
@@ -60,6 +62,16 @@ export default [
         path: 'modoule',
         name: 'system-modoule',
         component: Modoule
+      },
+      {
+        path: 'user',
+        name: 'system-user',
+        component: User
+      },
+      {
+        path: 'role',
+        name: 'system-role',
+        component: Role
       }
     ]
   },
@@ -84,5 +96,9 @@ export default [
   {
     path: '/',
     component: Layout
+  },
+  {
+    path: '/Form',
+    component: FormGroup
   }
 ]

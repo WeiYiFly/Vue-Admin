@@ -32,3 +32,10 @@ export const DeleteModule = ({ Id }) => {
     }
   })
 }
+// 获取模块tree 列表数据 GetModuleTree()
+export const GetModuleTree = () => {
+  return axios.request({
+    url: '/System/GetModuleTree',
+    method: 'get'
+  })
+}

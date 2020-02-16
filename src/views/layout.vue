@@ -112,6 +112,16 @@ export default {
               title: '模块管理',
               name: 'system-modoule',
               icon: 'ios-alarm'
+            },
+            {
+              title: '用户管理',
+              name: 'system-user',
+              icon: 'ios-alarm'
+            },
+            {
+              title: '角色管理',
+              name: 'system-role',
+              icon: 'ios-alarm'
             }
           ]
         }

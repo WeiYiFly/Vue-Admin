@@ -49,7 +49,7 @@ class HttpRequest {
     })
     instance.interceptors.response.use(res => {
       // console.log('请求--success')
-      // console.log(res)
+      // onsole.log(res)
       this.distroy(url)
       const { data } = res
       return data

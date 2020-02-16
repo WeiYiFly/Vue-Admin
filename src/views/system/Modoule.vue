@@ -1,19 +1,20 @@
 <template>
   <div class="view-content">
+     <!-- 查询 表单 -->
       <template>
         <Form ref="formInline" :model="Queryform"  inline >
             <Row type="flex" class="code-row-bg">
               <i-col :xs="24" :sm="24" :md="8" :lg="8">
                  <FormItem style="width: 90%">
                    <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                      <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
+                      <label slot="prepend">{{$t('tabC.Name')}}</label>
                    </i-input>
                 </FormItem>
               </i-col>
               <i-col :xs="24" :sm="24" :md="8" :lg="8">
                 <FormItem style="width: 90%">
                    <i-input v-model="Queryform.RouterName" placeholder="Enter something...">
-                      <label slot="prepend">{{$t('tablecolumns.RouterName')}}</label>
+                      <label slot="prepend">{{$t('tabC.RouterName')}}</label>
                    </i-input>
                 </FormItem>
               </i-col>
@@ -21,19 +22,19 @@
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
                   <FormItem style="width: 90%">
                     <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
+                        <label slot="prepend">{{$t('tabC.Name')}}</label>
                     </i-input>
                   </FormItem>
                 </i-col>
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
                   <FormItem style="width: 90%">
                     <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">{{$t('tablecolumns.Name')}}</label>
+                        <label slot="prepend">{{$t('tabC.Name')}}</label>
                     </i-input>
                   </FormItem>
                 </i-col>
                 <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                  <FormItem style="width: 90%" :label='this.$t("tablecolumns.Status")'>
+                  <FormItem style="width: 90%" :label='this.$t("tabC.Status")'>
                      <i-switch v-model="Queryform.Status"  />
                   </FormItem>
                 </i-col>
@@ -54,6 +55,7 @@
             </Row>
         </Form>
      </template>
+   <!-- 数据tabale -->
     <template>
       <div class="view-content-body">
         <Row >
@@ -63,7 +65,13 @@
             </button>
          </Card>
         </Row>
-        <Table :loading="tableLoading" border ref="table" :columns="datacolumns" :data="datalist" :height=tableHeight ></Table>
+        <Table
+        row-key="Id"
+        :loading="tableLoading" border
+        ref="table"
+        :columns="datacolumns"
+        :data="dataTreeListV"
+        :height=tableHeight ></Table>
          <Page :total=tableTotal show-elevator show-sizer  show-total
          :page-size-opts="[10, 20, 30, 50 ,100]"
          @on-change="handleTablePageChange"
@@ -71,7 +79,7 @@
            />
       </div>
     </template>
-
+  <!-- 新增，模态框 -->
     <template>
        <Modal
          v-model="AddmodalIsOpen"
@@ -81,29 +89,38 @@
         >
           <template>
               <Form :model="formItem" :label-width="80">
-                  <FormItem :label='this.$t("tablecolumns.Name")' >
+                  <FormItem :label='this.$t("tabC.Name")' >
                       <i-input v-model="formItem.Name" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem :label='this.$t("tablecolumns.RouterName")' >
+                  <FormItem :label='this.$t("tabC.RouterName")' >
                       <i-input v-model="formItem.RouterName" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem :label='this.$t("tablecolumns.IconName")'>
+                  <FormItem :label='this.$t("tabC.IconName")'>
                       <i-input v-model="formItem.IconName" placeholder="Enter something..."></i-input>
                   </FormItem>
-                  <FormItem :label='this.$t("tablecolumns.ParentId")'>
-                      <i-input v-model="formItem.ParentId" placeholder="Enter something..."></i-input>
+                  <FormItem :label='this.$t("tabC.ParentId")'>
+                      <!-- <i-input v-model="formItem.ParentId" placeholder="Enter something..."></i-input> -->
+                      <Row>
+                        <i-col :xs="20" :sm="20" :md="20" :lg="20">
+                          <treeselect v-model="formItem.ParentId"  :multiple="false"  :options="treeselectData"  />
+                        </i-col>
+                        <i-col :xs="4" :sm="4" :md="4" :lg="4">
+                           <Button size="large" icon="md-refresh" type="primary" shape="circle" @click="getModuleTree"></Button>
+                         </i-col>
+                      </Row>
+
                   </FormItem>
-                  <FormItem  :label='this.$t("tablecolumns.Status")'>
+                  <FormItem  :label='this.$t("tabC.Status")'>
                      <i-switch v-model="formItem.Status">  </i-switch>
                   </FormItem>
 
-                  <FormItem :label='this.$t("tablecolumns.Type")'>
+                  <FormItem :label='this.$t("tabC.Type")'>
                       <RadioGroup v-model="formItem.Type">
                           <Radio :label=1>Model</Radio>
                           <Radio :label=2>Page</Radio>
                       </RadioGroup>
                   </FormItem>
-                  <FormItem :label='this.$t("tablecolumns.Remarks")'>
+                  <FormItem :label='this.$t("tabC.Remarks")'>
                       <i-input v-model="formItem.Remarks" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></i-input>
                   </FormItem>
               </Form>
@@ -114,9 +131,28 @@
 
 </template>
 <script>
-import { GetModuleList, AddModule, EditModule, DeleteModule } from '@/api/system'
-// , EditModule, DeleteModule
+import { GetModuleList, AddModule, EditModule, DeleteModule, GetModuleTree } from '@/api/system'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { ListToTree } from '@/lib/util'
+import { Msgsuccess, Msgerror } from '@/lib/message'
 export default {
+  components: {
+    Treeselect
+  },
+  computed: {
+    dataTreeListV () {
+      // this.dataTreeList = []
+      var data = JSON.parse(JSON.stringify(this.datalist)) // 深拷贝
+      var rdata = ListToTree({
+        arrayList: data,
+        pidStr: 'ParentId',
+        idStr: 'Id',
+        childrenStr: 'children'
+      })
+      return rdata
+    }
+  },
   data () {
     return {
       QueryformIsOpen: false,
@@ -126,8 +162,28 @@ export default {
       tableHeight: 500,
       tableTotal: 0,
       tablePage: 1,
-      tablelimit: 10,
-      BeingAddorEdit: this.$t('message.BeingAddDate'),
+      tablelimit: 100,
+      treeselectData: [{
+        id: 'a',
+        label: 'a',
+        children: [{
+          id: 'aa',
+          label: 'aa'
+        }, {
+          id: 'ab',
+          label: 'ab'
+        }, {
+          id: 'ac',
+          label: 'ac'
+        }]
+      }, {
+        id: 'b',
+        label: 'b'
+      }, {
+        id: 'c',
+        label: 'c'
+      }],
+      BeingAddorEdit: this.$t('msg.BeingAddDate'),
       Rules: {
         Add: true,
         Edit: true,
@@ -151,13 +207,22 @@ export default {
       },
       datacolumns: [
         {
-          title: this.$t('tablecolumns.Name'),
+          title: this.$t('tabC.Name'),
           key: 'Name',
+          tree: true,
           render: (h, params) => {
-            return h('div', [
+            return h('div', {
+              style: {
+                float: 'left'
+              }
+            }, [
               h('Icon', {
                 props: {
-                  type: 'person'
+                  type: params.row.children ? 'ios-browsers' : 'md-browsers',
+                  size: 20
+                },
+                style: {
+                  // width: '20px'
                 }
               }),
               h('strong', params.row.Name)
@@ -165,11 +230,11 @@ export default {
           }
         },
         {
-          title: this.$t('tablecolumns.RouterName'),
+          title: this.$t('tabC.RouterName'),
           key: 'RouterName'
         },
         {
-          title: this.$t('tablecolumns.IconName'),
+          title: this.$t('tabC.IconName'),
           key: 'IconName',
           render: (h, params) => {
             return h('div', [
@@ -182,7 +247,7 @@ export default {
           }
         },
         {
-          title: this.$t('tablecolumns.Type'),
+          title: this.$t('tabC.Type'),
           key: 'Type',
           render: (h, params) => {
             let temp = ''
@@ -196,7 +261,7 @@ export default {
           }
         },
         {
-          title: this.$t('tablecolumns.Status'),
+          title: this.$t('tabC.Status'),
           key: 'Status',
           render: (h, params) => {
             // const temp = '<Switch v-model=' + params.row.Status + '  />'
@@ -212,11 +277,11 @@ export default {
           }
         },
         {
-          title: this.$t('tablecolumns.Remarks'),
+          title: this.$t('tabC.Remarks'),
           key: 'Remarks'
         },
         {
-          title: this.$t('tablecolumns.Action'),
+          title: this.$t('tabC.Action'),
           key: 'action',
           width: 150,
           align: 'center',
@@ -232,7 +297,8 @@ export default {
               },
               on: {
                 click: () => {
-                  this.Eidt(params.index)
+                  // console.log(params)
+                  this.Eidt(params.row.Id)
                 }
               }
             }, this.$t('action.Edit'))
@@ -252,12 +318,12 @@ export default {
               props: {
                 confirm: true,
                 transfer: true,
-                title: this.$t('message.confirmDel')
+                title: this.$t('msg.confirmDel')
               },
               on: {
                 'on-ok': () => {
                   // this.$Message.info('点击了确定')
-                  this.Delete(params.index)
+                  this.Delete(params.row.Id)
                 }
               }
             }, [
@@ -283,6 +349,8 @@ export default {
         }
       ],
       datalist: [
+      ],
+      dataTreeList: [
       ]
     }
   },
@@ -299,23 +367,25 @@ export default {
   methods: {
     Add () {
       // console.log('打开--添加数据 模态框')
-      this.BeingAddorEdit = this.$t('message.BeingAddDate')
+      this.BeingAddorEdit = this.$t('msg.BeingAddDate')
       this.formItem = { Status: true, Type: 1 }
       this.AddmodalIsOpen = true
     },
-    Eidt (index) {
-      this.BeingAddorEdit = this.$t('message.BeingEditDate')
-      this.formItem = this.datalist[index]
+    Eidt (Id) {
+      this.BeingAddorEdit = this.$t('msg.BeingEditDate')
+      this.formItem = this.datalist.find(u => u.Id === Id)
+      // console.log(this.formItem)
       this.AddmodalIsOpen = true
     },
-    Delete (index) {
-      var Id = this.datalist[index].Id
+    Delete (Id) {
       DeleteModule({ Id }).then(res => {
-        this.$Message.success({
-          background: true,
-          content: res.Message
-        })
-        this.datalist.splice(index, 1)
+        if (res.Code === 200) {
+          var index = this.datalist.findIndex(u => u.Id === Id)
+          this.datalist.splice(index, 1)
+          Msgsuccess(res.Code)
+        } else {
+          Msgerror(res.Code)
+        }
       })
     },
     OpenQueryform () {
@@ -353,70 +423,61 @@ export default {
       }, 500)
     },
     handleAddorEditData () {
-      console.log(this.formItem.name)
+      // console.log(this.formItem.name)
       // 验证
       if (this.formItem.Name === '' || this.formItem.Name === undefined) {
-        this.messageWarningFn(this.$t('message.InputName'))
+        this.messageWarningFn(this.$t('msg.InputName'))
         return
       }
-      if (this.BeingAddorEdit === this.$t('message.BeingAddDate')) {
+      if (this.BeingAddorEdit === this.$t('msg.BeingAddDate')) {
         // console.log('添加数据 --提交')
-        console.log(this.formItem)
-        // this.formItem.id = this.datalist.length + 1
-        this.datalist.push(this.formItem)
         AddModule(this.formItem).then(res => {
-          this.$Message.success({
-            background: true,
-            content: res.Message
-          })
+          this.formItem.Id = res.Result
+          this.datalist.push(this.formItem)
+          Msgsuccess(res.Code)
         })
       } else {
         // console.log('编辑数据 --提交')
-        // console.log(this.datalist)
-        // console.log(this.formItem)
         var tt = this.datalist.findIndex(item => item.Id === this.formItem.Id)
         EditModule(this.formItem).then(res => {
-          this.$Message.success({
-            background: true,
-            content: res.Message
-          })
+          Msgsuccess(res.Code)
         })
         this.datalist[tt] = this.formItem
       }
-      // this.formItem.id
       this.AddmodalIsOpen = false
     },
     getShowData () {
       this.tableLoading = true
       const Querydata = { ...this.Queryform, page: this.tablePage, limit: this.tablelimit }
       GetModuleList(Querydata).then(res => {
-        // console.log(res)
         if (res.Code === 200) {
           this.datalist = res.Data
           this.tableTotal = res.Count
         } else {
-          this.$Message.error({
-            background: true,
-            content: res.Message
-          })
+          Msgerror(res.Code)
         }
-
         this.tableLoading = false
+      })
+    },
+    getModuleTree () {
+      GetModuleTree().then(res => {
+        // console.log(res.Result)
+        // console.log(JSON.parse(res.Result))
+        this.treeselectData = JSON.parse(res.Result)
       })
     }
   },
   created () {
     this.getShowData()
-    // GetModuleList({
-    //   tablePage,
-    //   tablelimit
-    // }).then(res => {
-    //   console.log(res)
-    //   this.datalist = res
-    // })
+    this.getModuleTree()
   }
 }
 </script>
 <style lang="scss">
-
+.ivu-table-cell-tree {
+  float:left;
+}
+.ivu-table-cell-tree-level{
+  float:left;
+}
 </style>

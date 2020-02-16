@@ -11,7 +11,7 @@ module.exports = {
     join: '加入我们',
     contact: '联系我们'
   },
-  tablecolumns: {
+  tabC: {
     Name: '名称',
     RouterName: '路由名称',
     IconName: 'Icon图标css',
@@ -31,11 +31,13 @@ module.exports = {
     Retract: '收起',
     Delete: '删除'
   },
-  message: {
+  msg: {
     confirmDel: '您确认删除这条内容吗？',
     BeingAddDate: '正在添加数据',
     BeingEditDate: '正在编辑数据',
     InputName: '请输入名称'
-
+  },
+  msgCode: {
+    200: '操作成功！'
   }
 }

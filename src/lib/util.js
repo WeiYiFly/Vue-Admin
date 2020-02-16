@@ -97,3 +97,74 @@ export const localSave = (name, value) => {
 export const localRead = (name) => {
   return localStorage.getItem(name)
 }
+
+// 把数组处理成适用于tree组件的数据
+/**
+  * @description 将扁平化数据 转换成 树状结构
+  * @param {Array} arrayList 扁平化的数据
+  * @param {String} pidStr parentId的key名
+  * @param {String} idStr id的key名
+  * @param {String} childrenStr children的key名
+  */
+export const ListToTree = ({ arrayList, pidStr = 'pid', idStr = 'id', childrenStr = 'children' }) => {
+  const listOjb = {} // 用来储存{key: obj}格式的对象
+  const treeList = [] // 用来储存最终树形结构数据的数组
+  // 将数据变换成{key: obj}格式，方便下面处理数据
+  for (let i = 0; i < arrayList.length; i++) {
+    listOjb[arrayList[i][idStr]] = arrayList[i]
+  }
+  // 根据pid来将数据进行格式化
+  for (let j = 0; j < arrayList.length; j++) {
+    // 判断父级是否存在
+    const haveParent = listOjb[arrayList[j][pidStr]]
+    if (haveParent) {
+      // 如果有没有父级children字段，就创建一个children字段
+      !haveParent[childrenStr] && (haveParent[childrenStr] = [])
+      // 在父级里插入子项
+      haveParent[childrenStr].push(arrayList[j])
+    } else {
+      // 如果没有父级直接插入到最外层
+      treeList.push(arrayList[j])
+    }
+  }
+  return treeList
+}
+// 封装递归方法并执行
+function deepSort (list, content) {
+  var content1 = []
+  for (var m = 0; m < list.length; m++) {
+    for (var n = 0; n < content.length; n++) {
+      if (list[m].Id === content[n].ParentId) {
+        list[m].children.push(content[n])
+      } else {
+        content1.push(content[n])
+      }
+    }
+  }
+  for (var o = 0; o < list.length; o++) {
+    deepSort(list[o].children, content1)
+  }
+  // console.log()
+}
+export const ListToTreeV2 = (ListData) => {
+  const content = ListData
+  // Object.assign(content, ListData)
+  // console.log('ListToTreeV2')
+  // console.log(content)
+
+  var newlist = []
+  for (var a = 0; a < ListData.length; a++) {
+    content[a].children = []
+  }
+  // 拿出最高层级的元素----pid数值最小则层级最高，此处直接取"，省去很多麻烦的数据操作
+  for (var b = 0; b < content.length; b++) {
+    if (content[b].ParentId === '' || content[b].ParentId === null) {
+      newlist = content.splice(b, 1)
+    }
+  }
+  console.log('ListToTreeV2')
+  console.log(content)
+  console.log(newlist)
+  deepSort(newlist, content)
+  return newlist
+}

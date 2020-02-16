@@ -11,7 +11,7 @@ module.exports = {
     join: 'Join Us',
     contact: 'Contact Us'
   },
-  tablecolumns: {
+  tabC: {
     Name: 'Name',
     RouterName: 'RouterName',
     IconName: 'IconCss',
@@ -31,10 +31,13 @@ module.exports = {
     Retract: 'Retract',
     Delete: 'Delete'
   },
-  message: {
+  msg: {
     confirmDel: 'Are you sure delete this task?',
     BeingAddDate: 'Being Add Date',
     BeingEditDate: 'Being Edit Date',
     InputName: 'Please Input Name'
+  },
+  msgCode: {
+    200: 'success !'
   }
 }
