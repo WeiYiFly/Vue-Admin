@@ -246,7 +246,6 @@ export default {
             Msgsuccess(res.Code)
             if (res.Code === 200) {
               var tempindex = this.DataTable.List.findIndex(item => item.Id === this.formItem.Id)
-
               this.DataTable.List[tempindex] = fromValuelist
               Msgsuccess(res.Code)
             }

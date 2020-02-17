@@ -59,25 +59,42 @@
     <template>
       <div class="view-content-body">
         <Row >
-          <Card>
-            <button v-if="Rules.Add" type="button" @click="Add" class="ivu-btn ivu-btn-primary" >
-              <icon type="ivu-icon ivu-icon-md-add"></icon> <span>{{$t('action.NewAdd')}}</span>
-            </button>
+          <Card :padding="2" :bordered="false">
+             <Button  v-if="Rules.Add" @click="Add"   type="primary" icon="md-add" style="margin-left:10px">{{$t('action.NewAdd')}}</Button>
+             <Button  v-if="Rules.AddElement" @click="AddElement"  type="info" icon="md-add" style="margin-left:10px">{{$t('添加元素')}}</Button>
+             <Button  v-if="Rules.EditElement" @click="EditElement"  type="warning" icon="md-create" style="margin-left:10px">{{$t('编辑元素')}}</Button>
+              <Button v-if="Rules.DeleteElement" @click="DeleteElement"  type="error" icon="md-remove" style="margin-left:10px">{{$t('删除元素')}}</Button>
          </Card>
         </Row>
-        <Table
-        row-key="Id"
-        :loading="tableLoading" border
-        ref="table"
-        :columns="datacolumns"
-        :data="dataTreeListV"
-        :height=tableHeight ></Table>
-         <Page :total=tableTotal show-elevator show-sizer  show-total
-         :page-size-opts="[10, 20, 30, 50 ,100]"
-         @on-change="handleTablePageChange"
-         @on-page-size-change="handleTablePageSzieChange"
-           />
-      </div>
+        <Row>
+          <i-col :xs="22" :sm="20" :md="18" :lg="16">
+            <Table
+                  row-key="Id"
+                  highlight-row
+                  :loading="tableLoading"
+                  border
+                  ref="table"
+                  :columns="datacolumns"
+                  :data="dataTreeListV"
+                  :height=tableHeight
+                  @on-current-change="handleModelTableRowCilck" >
+            </Table>
+            <Page :total=tableTotal show-elevator show-sizer  show-total
+            :page-size-opts="[10, 20, 30, 50 ,100]"
+            @on-change="handleTablePageChange"
+            @on-page-size-change="handleTablePageSzieChange"
+              />
+          </i-col>
+
+        <i-col :xs="2" :sm="4" :md="6" :lg="8">
+        <Table border ref="DataTableElement"
+        :columns="DataTableElement.col"
+        :data="DataTableElement.List"
+         ></Table>
+        </i-col>
+
+      </Row>
+     </div>
     </template>
   <!-- 新增，模态框 -->
     <template>
@@ -126,19 +143,37 @@
               </Form>
           </template>
         </Modal>
+        <!-- 新增元素菜单权限按钮 模态框-->
+     <Modal
+         v-model="ModalFrameElement.IsOpen"
+         :loading="ModalFrameElement.Isloading"
+        :title="ModalFrameElement.title"
+        @on-ok="handleModalFrameElementSubmit"
+        >
+        <form-group ref="ModalFrameElement" :list="ModalFrameElement.ElementFormList"></form-group>
+        </Modal>
     </template>
+    <!-- <template>
+    <InputNumber  v-model="value1"></InputNumber>
+</template> -->
   </div>
 
 </template>
 <script>
-import { GetModuleList, AddModule, EditModule, DeleteModule, GetModuleTree } from '@/api/system'
+import {
+  GetModuleList, AddModule, EditModule, DeleteModule, GetModuleTree,
+  AddModuleElement, GetModuleElementList, EditModuleElement, DeleteModuleElementBatch
+} from '@/api/system'
+import FormGroup from '@/components/form-group'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { ListToTree } from '@/lib/util'
 import { Msgsuccess, Msgerror } from '@/lib/message'
 export default {
   components: {
-    Treeselect
+    Treeselect,
+    FormGroup
+
   },
   computed: {
     dataTreeListV () {
@@ -187,7 +222,10 @@ export default {
       Rules: {
         Add: true,
         Edit: true,
-        Delete: true
+        Delete: true,
+        AddElement: true,
+        EditElement: true,
+        DeleteElement: true
       },
       formItem: {
         Id: '',
@@ -218,7 +256,7 @@ export default {
             }, [
               h('Icon', {
                 props: {
-                  type: params.row.children ? 'ios-browsers' : 'md-browsers',
+                  type: params.row.children ? 'md-folder' : 'md-browsers',
                   size: 20
                 },
                 style: {
@@ -351,7 +389,95 @@ export default {
       datalist: [
       ],
       dataTreeList: [
-      ]
+      ],
+      ModalFrameElement: { // 菜单模态框
+        IsOpen: false,
+        Isloading: true,
+        title: '',
+        ElementFormList: [
+          {
+            Name: 'Name',
+            type: 'i-input',
+            value: '',
+            label: '名称'
+          },
+          {
+            Name: 'RulesName',
+            type: 'i-input',
+            value: '',
+            label: '权限标识'
+          },
+          {
+            Name: 'Class',
+            type: 'i-input',
+            value: '',
+            label: '样式'
+          },
+          {
+            Name: 'Icon',
+            type: 'i-input',
+            value: '',
+            label: '图标'
+          },
+          {
+            Name: 'Sort',
+            type: 'InputNumber',
+            value: 1,
+            label: '排序'
+          },
+          {
+            Name: 'Remark',
+            type: 'i-input',
+            value: '',
+            label: '备注'
+          },
+          {
+            Name: 'Status',
+            type: 'i-switch',
+            value: true,
+            label: '状态是否启用'
+          }
+        ],
+        ModuleId: '' // 模块Id
+      },
+      DataTableElement: { // 菜单表格
+        col: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: this.$t('tabC.Name'),
+            key: 'Name'
+          },
+          {
+            title: this.$t('tabC.RulesName'),
+            key: 'RulesName'
+          },
+          {
+            title: this.$t('tabC.Icon'),
+            key: 'Icon'
+          },
+          {
+            title: this.$t('tabC.Status'),
+            key: 'Status',
+            render: (h, params) => {
+              // const temp = '<Switch v-model=' + params.row.Status + '  />'
+              return h('div', [
+                h('i-switch', {
+                  props: {
+                    type: 'primary',
+                    value: params.row.Status,
+                    disabled: true
+                  }
+                })
+              ])
+            }
+          }
+        ],
+        List: []
+      }
     }
   },
   mounted () {
@@ -371,11 +497,31 @@ export default {
       this.formItem = { Status: true, Type: 1 }
       this.AddmodalIsOpen = true
     },
+    AddElement () {
+      if (this.ModalFrameElement.ModuleId === '') {
+        Msgerror('请选择模块')
+        return false
+      }
+      this.ModalFrameElement.title = this.$t('msg.BeingAddDate')
+      this.ModalFrameElement.IsOpen = true
+      this.$refs.ModalFrameElement.handleReset() // 重置表单
+    },
     Eidt (Id) {
       this.BeingAddorEdit = this.$t('msg.BeingEditDate')
       this.formItem = this.datalist.find(u => u.Id === Id)
       // console.log(this.formItem)
       this.AddmodalIsOpen = true
+    },
+    EditElement () {
+      // this.$refs.DataTableElement
+      var temp = this.$refs.DataTableElement.getSelection()
+      if (temp.length !== 1) {
+        Msgerror('请选择一条数据')
+        return
+      }
+      this.$refs.ModalFrameElement.valueList = this.DataTableElement.List.find(u => u.Id === temp[0].Id) // 表单赋值
+      this.ModalFrameElement.title = this.$t('msg.BeingEditDate')
+      this.ModalFrameElement.IsOpen = true
     },
     Delete (Id) {
       DeleteModule({ Id }).then(res => {
@@ -388,6 +534,29 @@ export default {
         }
       })
     },
+    DeleteElement () {
+      var temp = this.$refs.DataTableElement.getSelection()
+      console.log(temp)
+      if (temp.length < 1) {
+        Msgerror('请选择数据')
+        return
+      }
+      var key = ''
+      temp.forEach(element => {
+        key += element.Id + ','
+      })
+      DeleteModuleElementBatch({ key }).then(res => {
+        if (res.Code === 200) {
+          Msgsuccess(res.Code)
+        } else {
+          Msgerror(res.Code)
+        }
+      })
+      temp.forEach(e => {
+        var index = this.DataTableElement.List.findIndex(u => u.Id === e.Id)
+        if (index > -1) { this.DataTableElement.List.splice(index, 1) }
+      })
+    },
     OpenQueryform () {
       // console.log('查询 收缩 状态')
       this.QueryformIsOpen = !this.QueryformIsOpen
@@ -397,15 +566,12 @@ export default {
       this.tablePage = index
       this.getShowData()
     },
-    handleTablePageSzieChange (index) {
-      // console.log('改变 表格页数显示数量')
+    handleTablePageSzieChange (index) { // 改变 表格页数显示数量
       this.tablePage = 1
       this.tablelimit = index
       this.getShowData()
     },
-    handleSubmit () {
-      // console.log('提交 查询')
-      // console.log(this.Queryform)
+    handleSubmit () { // 提交 查询
       this.tablePage = 1
       this.getShowData()
     },
@@ -446,7 +612,7 @@ export default {
       }
       this.AddmodalIsOpen = false
     },
-    getShowData () {
+    getShowData () { // 获取 模块 数据
       this.tableLoading = true
       const Querydata = { ...this.Queryform, page: this.tablePage, limit: this.tablelimit }
       GetModuleList(Querydata).then(res => {
@@ -459,12 +625,41 @@ export default {
         this.tableLoading = false
       })
     },
+    getElementData () { // 获取元素数据
+      const Querydata = { key: this.ModalFrameElement.ModuleId }
+      GetModuleElementList(Querydata).then(res => {
+        if (res.Code === 200) {
+          this.DataTableElement.List = res.Data
+        } else {
+          Msgerror(res.Code)
+        }
+      })
+    },
     getModuleTree () {
       GetModuleTree().then(res => {
-        // console.log(res.Result)
-        // console.log(JSON.parse(res.Result))
         this.treeselectData = JSON.parse(res.Result)
       })
+    },
+    handleModelTableRowCilck (currentRow, oldCurrentRow) { // 处理表格行点击事件
+      this.ModalFrameElement.ModuleId = currentRow.Id
+      this.getElementData()
+    },
+    handleModalFrameElementSubmit () { // 处理--元素菜单模态框---提交事件
+      var fromValuelist = this.$refs.ModalFrameElement.valueList
+      if (this.ModalFrameElement.title === this.$t('msg.BeingAddDate')) { // 添加
+        fromValuelist.ModuleId = this.ModalFrameElement.ModuleId
+        AddModuleElement(fromValuelist).then(res => {
+          Msgsuccess(res.Code)
+          fromValuelist.Id = res.Result
+          this.DataTableElement.List.push(fromValuelist)
+        })
+      } else { // 编辑
+        EditModuleElement(fromValuelist).then(res => {
+          // this.DataTableElement.List[index] = fromValuelist //不需要重新复制 编辑的时候讲对象给他了
+          Msgsuccess(res.Code)
+        })
+      }
+      this.ModalFrameElement.IsOpen = false
     }
   },
   created () {
