@@ -8,18 +8,20 @@
     <template>
       <div class="view-content-body">
         <Row >
-          <Card>
-            <button v-if="Rules.Add" type="button" @click="Add" class="ivu-btn ivu-btn-primary" >
-              <icon type="ivu-icon ivu-icon-md-add"></icon> <span>{{$t('action.NewAdd')}}</span>
-            </button>
+          <Card :padding="2" :bordered="false">
+            <Button  v-if="Rules.Add" @click="Add"   type="primary" icon="md-add" style="margin-left:10px">{{$t('action.NewAdd')}}</Button>
+            <Button  v-if="Rules.AccessRole" @click="AccessRole"   type="primary" icon="ios-search" style="margin-left:10px">{{$t('为用户分配角色')}}</Button>
          </Card>
         </Row>
         <Table
+          border
+          highlight-row
           :loading="DataTable.Loading"
           ref="table"
           :columns="DataTable.columns"
           :data="DataTable.List"
-          :height=DataTable.Height border></Table>
+          :height=DataTable.Height
+          @on-current-change="handleTableRowCilck"></Table>
           <Page :total=DataTable.Total show-elevator show-sizer  show-total
           :page-size-opts="[10, 20, 30, 50 ,100]"
           :page-size=DataTable.limit
@@ -38,6 +40,18 @@
         >
         <form-group ref="Form" :list="formList"></form-group>
         </Modal>
+      <Modal
+         v-model="ModalAccessRole.IsOpen"
+         :loading="ModalAccessRole.Isloading"
+        :title="ModalAccessRole.title"
+        @on-ok="handleModalAccessRole"
+        >
+        <Table border ref="RoleTable"
+        :columns="ModalAccessRole.col"
+        :data="ModalAccessRole.data"
+         :height=500></Table>
+
+        </Modal>
     </template>
     </div>
 </template>
@@ -45,7 +59,7 @@
 import FormGroup from '@/components/form-group'
 import QueryForm from '@/components/query-form'
 import { Msgsuccess, Msgerror } from '@/lib/message'
-import { AddUser, GetUserList, DeleteUser, EditUser } from '@/api/user'
+import { AddUser, GetUserList, DeleteUser, EditUser, SetUserRole, GetUserRoleData } from '@/api/user'
 export default {
   components: {
     FormGroup,
@@ -56,7 +70,8 @@ export default {
       Rules: {
         Add: true,
         Edit: true,
-        Delete: true
+        Delete: true,
+        AccessRole: true
       },
       QueryList: [
         {
@@ -179,7 +194,8 @@ export default {
         Height: 500,
         Total: 0,
         Page: 1,
-        limit: 20
+        limit: 20,
+        currentRowId: ''
       },
       formList: [
         {
@@ -222,7 +238,53 @@ export default {
       ModalFrame: {
         IsOpen: false,
         Isloading: true,
-        title: 'aa'
+        title: ''
+      },
+      ModalAccessRole: {
+        IsOpen: false,
+        Isloading: true,
+        title: '',
+        data: [
+          {
+            Name: 'John Brown',
+            age: 18,
+            address: 'New York No. 1 Lake Park',
+            date: '2016-10-03',
+            _checked: true
+          }
+        ],
+        col: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
+          {
+            title: this.$t('tabC.Name'),
+            key: 'Name'
+          },
+          {
+            title: this.$t('tabC.Remarks'),
+            key: 'Remarks'
+          },
+          {
+            title: this.$t('tabC.Status'),
+            key: 'Status',
+            render: (h, params) => {
+              return h('div', [
+                h('i-switch', {
+                  props: {
+                    type: 'primary',
+                    value: params.row.Status,
+                    disabled: true
+                  }
+                })
+              ])
+            }
+          }
+        ],
+        UserName: ''
+
       }
     }
   },
@@ -247,6 +309,15 @@ export default {
           Msgerror(res.Code)
         }
       })
+    },
+    AccessRole () {
+      if (this.DataTable.currentRowId === '') {
+        Msgerror('请选择角色')
+        return
+      }
+      this.ModalAccessRole.title = this.$t('给用户<' + this.ModalAccessRole.UserName + '>分配角色') // 模态框 修改标题
+      this.getUserRoleData()
+      this.ModalAccessRole.IsOpen = true // 打开模态框
     },
     handleQuerySubmit (data) {
       this.getShowDataTable(data)
@@ -303,6 +374,22 @@ export default {
       this.DataTable.limit = index
       this.getShowData()
     },
+    handleTableRowCilck (currentRow, oldCurrentRow) { // 处理表格行点击事件
+      this.DataTable.currentRowId = currentRow.Id
+      this.ModalAccessRole.UserName = currentRow.Name
+    },
+    handleModalAccessRole () { // 分配角色 提交事件
+      var UserId = this.DataTable.currentRowId
+      var RoleId = []
+      var checklist = this.$refs.RoleTable.getSelection()
+      checklist.forEach(e => {
+        RoleId.push(e.Id)
+      })
+      SetUserRole({ UserId, RoleId }).then(res => {
+        Msgsuccess(res.Code)
+        this.ModalAccessRole.IsOpen = false // 打开模态框
+      })
+    },
     getShowDataTable (data) { // 获取表格数据
       var Query = { page: this.DataTable.Page, limit: this.DataTable.limit, ...data }
       GetUserList(Query).then(res => {
@@ -312,6 +399,12 @@ export default {
         } else {
           Msgerror(res.Code)
         }
+      })
+    },
+    getUserRoleData () { // 获取 角色数据
+      var Id = this.DataTable.currentRowId
+      GetUserRoleData({ Id }).then(res => {
+        this.ModalAccessRole.data = res.Result
       })
     }
   },

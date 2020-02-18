@@ -32,3 +32,34 @@ export const DeleteRole = ({ Id }) => {
     }
   })
 }
+
+export const GetRoleModuleTree = ({ Id }) => {
+  return axios.request({
+    url: '/System/GetRoleModuleTree',
+    method: 'post',
+    data: {
+      Id
+    }
+  })
+}
+
+export const GetRoleModuleElementList = ({ Id }) => {
+  return axios.request({
+    url: '/System/GetRoleModuleElementList',
+    method: 'post',
+    data: {
+      Id
+    }
+  })
+}
+export const SetRoleModuleElementList = ({ ModuleId, ElementId, RoleId }) => {
+  return axios.request({
+    url: '/System/SetRoleModuleElementList',
+    method: 'post',
+    data: {
+      ModuleId,
+      ElementId,
+      RoleId
+    }
+  })
+}

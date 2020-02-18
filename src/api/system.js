@@ -36,7 +36,7 @@ export const DeleteModule = ({ Id }) => {
 export const GetModuleTree = () => {
   return axios.request({
     url: '/System/GetModuleTree',
-    method: 'get'
+    method: 'post'
   })
 }
 

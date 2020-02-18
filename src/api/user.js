@@ -39,3 +39,23 @@ export const DeleteUser = ({ Id }) => {
     }
   })
 }
+
+export const GetUserRoleData = ({ Id }) => {
+  return axios.request({
+    url: '/System/GetUserRoleData',
+    method: 'post',
+    data: {
+      Id
+    }
+  })
+}
+export const SetUserRole = ({ UserId, RoleId }) => {
+  return axios.request({
+    url: '/System/SetUserRole',
+    method: 'post',
+    data: {
+      UserId,
+      RoleId
+    }
+  })
+}
