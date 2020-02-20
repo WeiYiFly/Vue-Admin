@@ -1,7 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'
 import { baseURL } from '@/config'
-// import { getToken } from '@/lib/util'
+import { getToken } from '@/lib/util'
+// import store from '@/store'
 class HttpRequest {
   constructor (baseUrl = baseURL) {
     // console.log(baseURL)
@@ -34,9 +35,10 @@ class HttpRequest {
         // Spin.show()
       }
       this.queue[url] = true
-      // config.headers['Authorization'] = getToken()
+      config.headers.Authorization = getToken()
+
       // console.log('config--')
-      // console.log(config)
+      console.log(config)
       // 将传入的参数序列化
       // {"page":1,"limit":10,"key":""}   => "page=2&limit=10&key="
       if (config.method === 'post') {

@@ -87,11 +87,14 @@ export default [
   },
   {
     path: '/login',
+    name: 'login',
     component: login
   },
+
   {
     path: '/Home',
-    component: Home
+    name: 'home',
+    component: Layout
   },
   {
     path: '/',

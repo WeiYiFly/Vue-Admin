@@ -2,6 +2,21 @@
 //
 //* *********************** */
 import { doCustomTimes, objEqual } from './tools'
+import Cookies from 'js-cookie'
+
+// 设置网页title
+export const setTitle = (title) => {
+  window.document.title = title || 'admin'
+}
+
+// 设置登录Token
+export const setToken = (token, tokenName = 'token') => {
+  Cookies.set(tokenName, token)
+}
+// 获取登录Token
+export const getToken = (tokenName = 'token') => {
+  return Cookies.get(tokenName)
+}
 
 // 判断路由是否存在
 export const routeHasExist = (tabList, routeItem) => {

@@ -11,6 +11,7 @@
           <Header class="header-wrapper">
             <Icon :class="triggerClasses" @click.native="handleCollapsed"  type="md-menu" :size="32" />
      <div class="Header-right">
+
               <Dropdown style="margin-left: 20px"
               :transfer=true
               @on-click="changingLanguage" >
