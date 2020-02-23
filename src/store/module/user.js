@@ -74,16 +74,17 @@ const actions = {
   },
   JudgeRoutername  ({ commit }, routername) {
     return new Promise((resolve, reject) => {
-      console.log(routername)
-      console.log('JudgeRoutername')
+      // resolve() // 测试
+      // console.log(routername)
+      // console.log('JudgeRoutername')
       if (routername === undefined) resolve()
       var windex = state.whiteRoutername.findIndex(u => u === routername)
-      console.log(windex)
+      // console.log(windex)
       if (windex > -1) {
         resolve()
       }
       var index = state.userinfo.ModuleList.findIndex(u => u.RouterName === routername)
-      console.log(index)
+      // console.log(index)
       if (index > -1) {
         resolve()
       } else {

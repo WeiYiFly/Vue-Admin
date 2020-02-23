@@ -16,7 +16,7 @@ class HttpRequest {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      timeout: 3000 // 请求超时时长
+      timeout: 30000 // 请求超时时长
     }
     return config
   }
@@ -57,7 +57,9 @@ class HttpRequest {
       return data
     }, error => {
       this.distroy(url)
-      return Promise.reject(error.response.data)
+
+      if (error.response !== undefined) { return Promise.reject(error.response.data) } else { return Promise.reject(error) }
+      // return Promise.reject(new Error(error))
     })
   }
 

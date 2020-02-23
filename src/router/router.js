@@ -34,6 +34,11 @@ export default [
     },
     component: error
   },
+  {
+    path: '*',
+    name: '*',
+    redirect: to => error
+  },
   ...system
 
 ]

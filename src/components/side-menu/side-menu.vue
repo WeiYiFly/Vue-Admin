@@ -57,8 +57,8 @@ export default {
   },
   methods: {
     handleSelect (name) {
-      console.log('menu 点击事件')
-      console.log(name)
+      // console.log('menu 点击事件')
+      // console.log(name)
       this.$router.push({
         name
       })

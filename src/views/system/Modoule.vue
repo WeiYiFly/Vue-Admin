@@ -2,58 +2,7 @@
   <div class="view-content">
      <!-- 查询 表单 -->
       <template>
-        <Form ref="formInline" :model="Queryform"  inline >
-            <Row type="flex" class="code-row-bg">
-              <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                 <FormItem style="width: 90%">
-                   <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                      <label slot="prepend">{{$t('tabC.Name')}}</label>
-                   </i-input>
-                </FormItem>
-              </i-col>
-              <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                <FormItem style="width: 90%">
-                   <i-input v-model="Queryform.RouterName" placeholder="Enter something...">
-                      <label slot="prepend">{{$t('tabC.RouterName')}}</label>
-                   </i-input>
-                </FormItem>
-              </i-col>
-              <template v-if="QueryformIsOpen">
-                <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                  <FormItem style="width: 90%">
-                    <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">{{$t('tabC.Name')}}</label>
-                    </i-input>
-                  </FormItem>
-                </i-col>
-                <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                  <FormItem style="width: 90%">
-                    <i-input v-model="Queryform.Name" placeholder="Enter something...">
-                        <label slot="prepend">{{$t('tabC.Name')}}</label>
-                    </i-input>
-                  </FormItem>
-                </i-col>
-                <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                  <FormItem style="width: 90%" :label='this.$t("tabC.Status")'>
-                     <i-switch v-model="Queryform.Status"  />
-                  </FormItem>
-                </i-col>
-              </template>
-              <i-col :xs="24" :sm="24" :md="8" :lg="8">
-                <FormItem style="width: 90%">
-                 <Button type="primary" @click="handleSubmit('QueryformInline')">{{$t('action.Query')}}</Button>
-                 <Button style="margin-left: 8px" @click="handleReSet">{{$t('action.Reset')}}</Button>
-                  <a v-if="!QueryformIsOpen"  style="font-size: 14px;" @click="OpenQueryform">
-                      {{$t('action.Open')}}<Icon type="ios-arrow-down" />
-                  </a>
-                  <a v-else style="font-size: 14px;" @click="OpenQueryform">
-                      {{$t('action.Retract')}}<Icon type="ios-arrow-up" />
-                  </a>
-                </FormItem>
-              </i-col>
-
-            </Row>
-        </Form>
+        <query-form ref="Query" :list=QueryList :QueryMethod="handleQuerySubmit"></query-form>
      </template>
    <!-- 数据tabale -->
     <template>
@@ -130,6 +79,9 @@
                   <FormItem  :label='this.$t("tabC.Status")'>
                      <i-switch v-model="formItem.Status">  </i-switch>
                   </FormItem>
+                   <FormItem  :label='this.$t("tabC.SortNo")'>
+                      <InputNumber v-model="formItem.SortNo" :editable="true"></InputNumber>
+                  </FormItem>
 
                   <FormItem :label='this.$t("tabC.Type")'>
                       <RadioGroup v-model="formItem.Type">
@@ -169,11 +121,13 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { ListToTree } from '@/lib/util'
 import { Msgsuccess, Msgerror } from '@/lib/message'
+import QueryForm from '@/components/query-form'
+import { mapState } from 'vuex'
 export default {
   components: {
     Treeselect,
-    FormGroup
-
+    FormGroup,
+    QueryForm
   },
   computed: {
     dataTreeListV () {
@@ -186,7 +140,11 @@ export default {
         childrenStr: 'children'
       })
       return rdata
-    }
+    },
+    ...mapState({
+      userinfoModuleElementList: state => state.user.userinfo.ModuleElementList,
+      userinfoModuleList: state => state.user.userinfo.ModuleList
+    })
   },
   data () {
     return {
@@ -198,26 +156,7 @@ export default {
       tableTotal: 0,
       tablePage: 1,
       tablelimit: 100,
-      treeselectData: [{
-        id: 'a',
-        label: 'a',
-        children: [{
-          id: 'aa',
-          label: 'aa'
-        }, {
-          id: 'ab',
-          label: 'ab'
-        }, {
-          id: 'ac',
-          label: 'ac'
-        }]
-      }, {
-        id: 'b',
-        label: 'b'
-      }, {
-        id: 'c',
-        label: 'c'
-      }],
+      treeselectData: [],
       BeingAddorEdit: this.$t('msg.BeingAddDate'),
       Rules: {
         Add: true,
@@ -243,6 +182,40 @@ export default {
         RouterName: '',
         Status: true
       },
+      QueryList: [
+        {
+          Name: 'Name',
+          type: 'i-input',
+          value: '',
+          label: '模块名称'
+        },
+        {
+          Name: 'RouterName',
+          type: 'i-input',
+          value: '',
+          label: '路由名称'
+        },
+        {
+          Name: 'RouterName',
+          type: 'i-input',
+          value: '',
+          label: '路由名称'
+        },
+        {
+          Name: 'Status',
+          type: 'i-select',
+          value: 0,
+          label: '是否启用',
+          children: {
+            type: 'i-option',
+            list: [
+              { value: '0', title: '无' },
+              { value: '1', title: '启用' },
+              { value: '2', title: '禁用' }
+            ]
+          }
+        }
+      ],
       datacolumns: [
         {
           title: this.$t('tabC.Name'),
@@ -455,10 +428,10 @@ export default {
             title: this.$t('tabC.RulesName'),
             key: 'RulesName'
           },
-          {
-            title: this.$t('tabC.Icon'),
-            key: 'Icon'
-          },
+          // {
+          //   title: this.$t('tabC.Icon'),
+          //   key: 'Icon'
+          // },
           {
             title: this.$t('tabC.Status'),
             key: 'Status',
@@ -612,9 +585,17 @@ export default {
       }
       this.AddmodalIsOpen = false
     },
+    handleQuerySubmit () {
+      this.tablePage = 1
+      this.getShowData()
+    },
     getShowData () { // 获取 模块 数据
       this.tableLoading = true
-      const Querydata = { ...this.Queryform, page: this.tablePage, limit: this.tablelimit }
+      var data = {}
+      if (this.$refs.Query !== undefined) {
+        data = this.$refs.Query.valueList
+      }
+      const Querydata = { ...data, page: this.tablePage, limit: this.tablelimit }
       GetModuleList(Querydata).then(res => {
         if (res.Code === 200) {
           this.datalist = res.Data
@@ -622,6 +603,9 @@ export default {
         } else {
           Msgerror(res.Code)
         }
+        this.tableLoading = false
+      }).catch(err => {
+        Msgerror(err)
         this.tableLoading = false
       })
     },
@@ -635,9 +619,12 @@ export default {
         }
       })
     },
+
     getModuleTree () {
       GetModuleTree().then(res => {
         this.treeselectData = JSON.parse(res.Result)
+      }).catch(err => {
+        Msgerror(err)
       })
     },
     handleModelTableRowCilck (currentRow, oldCurrentRow) { // 处理表格行点击事件
@@ -660,11 +647,35 @@ export default {
         })
       }
       this.ModalFrameElement.IsOpen = false
+    },
+    judgeRules () {
+      // this.Rules
+      // this.Rules.forEach()
+      //   this.userinfoModuleElementList
+      var Currentmodule = this.userinfoModuleList.find(u => u.RouterName === this.$route.name)
+      var ElementList = this.userinfoModuleElementList.filter(function (item, index) {
+        if (item.ModuleId === Currentmodule.Id) {
+          return item
+        }
+      })
+      // console.log(ElementList)
+      for (var i in this.Rules) {
+        // console.log(i) // ADD
+        // console.log(this.Rules[i]) // true
+        var index = ElementList.findIndex(u => u.RulesName === i)
+        if (index > -1) {
+          this.Rules[i] = true
+        } else {
+          this.Rules[i] = false
+        }
+      }
+      // console.log(this.Rules)
     }
   },
   created () {
     this.getShowData()
     this.getModuleTree()
+    this.judgeRules()
   }
 }
 </script>

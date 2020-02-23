@@ -95,8 +95,7 @@ export default {
               name: 'home'
             })
           }).catch(error => {
-            console.log(error)
-            this.$Message.error(error.Message)
+            if (error.Message !== undefined) { this.$Message.error(error.Message) } else { this.$Message.error(error.message) }
           })
         } else {
           this.$Message.error('登录失败!')

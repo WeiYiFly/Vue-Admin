@@ -144,41 +144,41 @@ export const ListToTree = ({ arrayList, pidStr = 'pid', idStr = 'id', childrenSt
   return treeList
 }
 // 封装递归方法并执行
-function deepSort (list, content) {
-  var content1 = []
-  for (var m = 0; m < list.length; m++) {
-    for (var n = 0; n < content.length; n++) {
-      if (list[m].Id === content[n].ParentId) {
-        list[m].children.push(content[n])
-      } else {
-        content1.push(content[n])
-      }
-    }
-  }
-  for (var o = 0; o < list.length; o++) {
-    deepSort(list[o].children, content1)
-  }
-  // console.log()
-}
-export const ListToTreeV2 = (ListData) => {
-  const content = ListData
-  // Object.assign(content, ListData)
-  // console.log('ListToTreeV2')
-  // console.log(content)
+// function deepSort (list, content) {
+//   var content1 = []
+//   for (var m = 0; m < list.length; m++) {
+//     for (var n = 0; n < content.length; n++) {
+//       if (list[m].Id === content[n].ParentId) {
+//         list[m].children.push(content[n])
+//       } else {
+//         content1.push(content[n])
+//       }
+//     }
+//   }
+//   for (var o = 0; o < list.length; o++) {
+//     deepSort(list[o].children, content1)
+//   }
+//   // console.log()
+// }
+// export const ListToTreeV2 = (ListData) => {
+//   const content = ListData
+//   // Object.assign(content, ListData)
+//   // console.log('ListToTreeV2')
+//   // console.log(content)
 
-  var newlist = []
-  for (var a = 0; a < ListData.length; a++) {
-    content[a].children = []
-  }
-  // 拿出最高层级的元素----pid数值最小则层级最高，此处直接取"，省去很多麻烦的数据操作
-  for (var b = 0; b < content.length; b++) {
-    if (content[b].ParentId === '' || content[b].ParentId === null) {
-      newlist = content.splice(b, 1)
-    }
-  }
-  console.log('ListToTreeV2')
-  console.log(content)
-  console.log(newlist)
-  deepSort(newlist, content)
-  return newlist
-}
+//   var newlist = []
+//   for (var a = 0; a < ListData.length; a++) {
+//     content[a].children = []
+//   }
+//   // 拿出最高层级的元素----pid数值最小则层级最高，此处直接取"，省去很多麻烦的数据操作
+//   for (var b = 0; b < content.length; b++) {
+//     if (content[b].ParentId === '' || content[b].ParentId === null) {
+//       newlist = content.splice(b, 1)
+//     }
+//   }
+//   console.log('ListToTreeV2')
+//   console.log(content)
+//   console.log(newlist)
+//   deepSort(newlist, content)
+//   return newlist
+// }

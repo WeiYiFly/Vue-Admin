@@ -19,7 +19,9 @@ module.exports = {
     Status: '状态',
     ParentId: '上级',
     Remarks: '说明',
-    Action: '操作'
+    Action: '操作',
+    RulesName: '权限名',
+    Icon: 'icon'
   },
   action: {
     NewAdd: '新增',

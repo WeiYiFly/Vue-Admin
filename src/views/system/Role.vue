@@ -2,7 +2,7 @@
     <div  class="view-content">
    <!-- 查询 表单 -->
       <template>
-        <query-form ref="Query" :list=QueryList :QueryMethod="getShowDataTable"></query-form>
+        <query-form ref="Query" :list=QueryList :QueryMethod="handleQuerySubmit"></query-form>
      </template>
   <!-- 数据tabale -->
     <template>
@@ -83,11 +83,18 @@
 import FormGroup from '@/components/form-group'
 import QueryForm from '@/components/query-form'
 import { Msgsuccess, Msgerror } from '@/lib/message'
+import { mapState } from 'vuex'
 import { AddRole, GetRoleList, DeleteRole, EditRole, GetRoleModuleTree, GetRoleModuleElementList, SetRoleModuleElementList } from '@/api/role'
 export default {
   components: {
     FormGroup,
     QueryForm
+  },
+  computed: {
+    ...mapState({
+      userinfoModuleElementList: state => state.user.userinfo.ModuleElementList,
+      userinfoModuleList: state => state.user.userinfo.ModuleList
+    })
   },
   data () {
     return {
@@ -106,9 +113,17 @@ export default {
         },
         {
           Name: 'Status',
-          type: 'i-switch',
-          value: true,
-          label: '状态是否启用'
+          type: 'i-select',
+          value: 0,
+          label: '状态是否启用',
+          children: {
+            type: 'i-option',
+            list: [
+              { value: 0, title: '无' },
+              { value: 1, title: '启用' },
+              { value: 2, title: '禁用' }
+            ]
+          }
         },
         {
           Name: 'Remarks',
@@ -281,7 +296,8 @@ export default {
       this.ModalAccessModule.IsOpen = true
     },
     handleQuerySubmit (data) {
-      this.getShowDataTable(data)
+      this.DataTable.Page = 1
+      this.getShowDataTable()
     },
     handleModalFrame () { // 添加编辑模态框 提交事件
       // console.log(this.$refs.Form.valueList) // 获取表单的数据
@@ -332,7 +348,7 @@ export default {
     handleTablePageSzieChange (index) { // 表格页数显示数量 改变
       this.DataTable.Page = 1
       this.DataTable.limit = index
-      this.getShowData()
+      this.getShowDataTable()
     },
     handleTableRowCilck (currentRow, oldCurrentRow) { // 处理表格行点击事件
       this.DataTable.currentRowId = currentRow.Id
@@ -386,7 +402,11 @@ export default {
         this.ModalAccessModule.IsOpen = false
       })
     },
-    getShowDataTable (data) { // 获取表格数据
+    getShowDataTable () { // 获取表格数据
+      var data = {}
+      if (this.$refs.Query !== undefined) {
+        data = this.$refs.Query.valueList
+      }
       var Query = { page: this.DataTable.Page, limit: this.DataTable.limit, ...data }
       GetRoleList(Query).then(res => {
         if (res.Code === 200) {
@@ -415,6 +435,22 @@ export default {
     },
     getTreeNameList (treelist, Id) { // 获取 上级的名字
 
+    },
+    judgeRules () {
+      var Currentmodule = this.userinfoModuleList.find(u => u.RouterName === this.$route.name)
+      var ElementList = this.userinfoModuleElementList.filter(function (item, index) {
+        if (item.ModuleId === Currentmodule.Id) {
+          return item
+        }
+      })
+      for (var i in this.Rules) {
+        var index = ElementList.findIndex(u => u.RulesName === i)
+        if (index > -1) {
+          this.Rules[i] = true
+        } else {
+          this.Rules[i] = false
+        }
+      }
     }
   },
   mounted () { // 表格高度 自适应
@@ -427,6 +463,7 @@ export default {
   },
   created () {
     this.getShowDataTable()
+    this.judgeRules()
   }
 }
 </script>

@@ -30,6 +30,10 @@ const mutations = {
   REMOVE_TAB (state, index) {
     state.tabList.splice(index, 1)
     localSave(localTabList, JSON.stringify(getTabListToLocal(state.tabList)))
+  },
+  REMOVEAll_TAB (state) {
+    state.tabList = []
+    localSave(localTabList, JSON.stringify(getTabListToLocal(state.tabList)))
   }
 }
 

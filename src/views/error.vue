@@ -1,28 +1,11 @@
 <template>
     <div>
-        <strong>Default Size: 404?</strong>
+        <strong> 404 没找到页面</strong>
+        <strong> 404 没找到页面</strong>
+        <strong> 404 没找到页面</strong>
+        <strong> 404 没找到页面</strong>
         <br><br>
-        <List header="Header" footer="Footer" border>
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-        </List>
-        <br>
-        <strong>Small Size:</strong>
-        <br><br>
-        <List header="Header" footer="Footer" border size="small">
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-        </List>
-        <br>
-        <strong>Large Size:</strong>
-        <br><br>
-        <List header="Header" footer="Footer" border size="large">
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-            <ListItem>This is a piece of text.</ListItem>
-        </List>
+
     </div>
 </template>
 <script>

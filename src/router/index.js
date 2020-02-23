@@ -17,6 +17,7 @@ router.beforeEach((to, from, next) => {
   to.meta && setTitle(to.meta.title)
   const token = getToken()
   // console.log('路由拦截')
+  // console.log(to.name)
   if (token) {
     store.dispatch('authorization', token).then(() => {
       if (to.name === 'login') next({ name: 'home' })

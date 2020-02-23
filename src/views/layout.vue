@@ -138,7 +138,8 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'UPDATE_ROUTER'
+      'UPDATE_ROUTER',
+      'REMOVEAll_TAB'
     ]),
     ...mapActions([
       'handleRemove',
@@ -162,11 +163,13 @@ export default {
       })
     },
     labelRender (item) {
-      var title = this.userinfo.ModuleList.find(u => u.RouterName === item.name).Name
+      var title = this.userinfo.ModuleList.find(u => u.RouterName === item.name)
+      var Name = ''
+      if (title !== undefined) { Name = title.Name }
       return h => {
         return (
           <div>
-            <span>{title}</span>
+            <span>{Name}</span>
             <icon nativeOn-click={this.handleTabRemove.bind(this, getTabNameByRoute(item))} type="md-close-circle" style="line-height:12px;margin-right: -5px" size="20" ></icon>
           </div>
         )
@@ -180,9 +183,9 @@ export default {
     },
     handleLogout () { // 退出登录
       this.logout()
-      location.reload() // 清除store
+      this.REMOVEAll_TAB()
       this.$router.push({
-        name: 'home'
+        name: 'login'
       })
     }
 
