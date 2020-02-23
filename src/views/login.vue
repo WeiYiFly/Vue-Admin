@@ -42,7 +42,7 @@ html,body {
             <h2>登录</h2>
             <Form ref="loginData" :model="loginData" :rules="ruleValidate" :label-width="90">
                 <FormItem label="Account" prop="Account">
-                    <i-input type="password" v-model="loginData.Account" placeholder="请输入账号"></i-input>
+                    <i-input type="text" v-model="loginData.Account" placeholder="请输入账号"></i-input>
                 </FormItem>
                 <FormItem label="Password" prop="Password" >
                     <i-input type="password" v-model="loginData.Password" placeholder="请输入密码"></i-input>
@@ -61,8 +61,8 @@ export default {
   data () {
     return {
       loginData: {
-        Account: '',
-        Password: ''
+        Account: 'yiwei',
+        Password: '123456'
       },
       ruleValidate: {
         Account: [
@@ -81,9 +81,7 @@ export default {
       'login'
     ]),
     handleSubmit (name) {
-      console.log(name)
       this.$refs[name].validate((valid) => {
-        console.log(valid)
         if (valid) {
           // this.$Message.success('提交成功!')
           this.login({

@@ -179,7 +179,12 @@ export default {
       console.log(name)
       localSave(localLanguage, name)
       this.$i18n.locale = name
-      location.reload()
+      // this.$router.go(0)
+      // location.reload()
+
+      this.$router.push({
+        name: this.$router.name
+      }) // 在自动跳
     },
     handleLogout () { // 退出登录
       this.logout()

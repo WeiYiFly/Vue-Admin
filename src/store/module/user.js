@@ -34,7 +34,7 @@ const actions = {
           })
 
           // rdata = [homedata, ...rdata]
-          console.log(rdata)
+          // console.log(rdata)
           localSave(localUserInfoModuleList, JSON.stringify(rdata))
           state.userinfoModuleList = rdata
 
